@@ -1,0 +1,24 @@
+.header__text {
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 18px;
+  text-overflow: ellipsis;
+  color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0 24px 0 0;
+  padding: 0;
+}
+
+@media screen and ( max-width: 920px ) {
+  .header__text {
+    max-width: 350px;
+  }
+}
+
+@media screen and ( max-width: 425px ) {
+  .header__text {
+    font-size: 14px;
+    max-width: 220px;
+  }
+}

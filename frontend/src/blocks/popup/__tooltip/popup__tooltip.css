@@ -1,0 +1,15 @@
+.popup__tooltip {
+  position: relative;
+  background-color: #fff;
+  width: 430px;
+  height: 330px;
+  z-index: 4;
+  border-radius: 10px;
+  border: 2px solid white;
+}
+
+@media screen and (max-width: 660px) {
+.popup__profile {
+  width: 282px;
+}
+}

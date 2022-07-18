@@ -1,0 +1,7 @@
+.popup__edit {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: none;
+}

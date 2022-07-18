@@ -1,0 +1,23 @@
+.login__input {
+  display: block;
+  border: none;
+  border-bottom: solid 1px rgb(0, 0, 0, 0.2);
+  width: 100%;
+  padding: 0;
+  padding-bottom: 8px;
+  margin-bottom: 5px;
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.login__input:last-child {
+  margin-bottom: 48px;
+}
+
+@media screen and ( max-width: 768px ) {
+  .login__input:last-child {
+    margin-bottom: 45px;
+  }
+}

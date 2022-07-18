@@ -1,0 +1,14 @@
+.login__but-submit_mod {
+    margin-top: 189px;
+    margin-bottom: 1px;
+  }
+  
+  .login__but-submit_mod:hover{
+    opacity: 0.85;
+  }
+
+  @media screen and ( max-width: 920px ) {
+    .login__but-submit_mod  {
+      margin-top: 170px;
+    }
+  }

@@ -1,0 +1,15 @@
+.place__urn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 18px;
+  height: 19px;
+  background: transparent;
+  background-image: url(../../../images/urn.svg);
+  border: none;
+  z-index: 1;
+}
+
+.place__urn:hover {
+  opacity: 0.6;
+}

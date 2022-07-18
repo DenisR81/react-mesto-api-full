@@ -1,0 +1,24 @@
+.logo {
+  max-width: 142px;
+  max-height: 33px;
+  margin-top: 45px;
+  margin-bottom: 37px;
+}
+
+.logo:hover {
+  opacity: 0.6;
+}
+
+@media screen and (max-width: 900px) {
+.logo {
+  margin-left: 20px;
+}
+}
+
+@media screen and (max-width: 585px) {
+.logo {
+  max-width: 103px;
+  max-height: 24px;
+  margin: 28px auto 31px 25px;
+}
+}

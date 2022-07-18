@@ -1,0 +1,13 @@
+.popup__profile {
+  position: relative;
+  background-color: #fff;
+  width: 430px;
+  z-index: 4;
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 660px) {
+.popup__profile {
+  width: 282px;
+}
+}

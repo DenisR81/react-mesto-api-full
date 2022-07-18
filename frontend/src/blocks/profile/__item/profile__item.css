@@ -1,0 +1,21 @@
+.profile__item {
+  color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media screen and (max-width: 900px) {
+  .profile__item {
+    margin-left: 20px;
+  }
+}
+
+@media screen and (max-width: 740px) {
+.profile__item {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+}

@@ -1,0 +1,9 @@
+.place__heart_active {
+  width: 24px;
+  height: 19px;
+  background: transparent;
+  background-repeat: no-repeat;
+  background-image: url(../../../../images/blheart.svg);
+  border: none;
+  z-index: 2;
+}

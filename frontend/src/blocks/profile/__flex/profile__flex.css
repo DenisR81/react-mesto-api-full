@@ -1,0 +1,15 @@
+.profile__flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 740px) {
+.profile__flex {
+  align-items: center;
+}
+}

@@ -1,0 +1,26 @@
+.login__but-submit {
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  transition: opacity 0.3s;
+  cursor: pointer;
+  width: 100%;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  height: 50px;
+  border-radius: 2px;
+}
+
+.login__but-submit:hover {
+  opacity: .8;
+}
+
+@media screen and ( max-width: 768px ) {
+  .login__but-submit {
+    height: 46px;
+    font-size: 14px;
+  }
+}

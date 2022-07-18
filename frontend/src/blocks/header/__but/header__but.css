@@ -1,0 +1,10 @@
+.header__but {
+  color: #A9A9A9;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+.header__but:hover {
+  opacity: .6;
+}

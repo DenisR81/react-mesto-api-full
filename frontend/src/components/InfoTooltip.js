@@ -24,6 +24,6 @@ function InfoTooltip(props) {
       </div>
     </div>
   );
-}
+} 
 
 export default InfoTooltip;

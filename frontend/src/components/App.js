@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  BrowserRouter,
-  Route,
-  Switch,
-  Redirect,
-  useHistory,
-} from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import Login from "./Login";
 import Register from "./Register";
@@ -17,6 +11,7 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ConfirmPopup from "./ConfirmPopup";
+import InfoTooltip from "./InfoTooltip";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { api } from "../utils/Api";
 import * as auth from "../utils/auth";
@@ -41,16 +36,73 @@ function App() {
   const [userData, setUserData] = React.useState("");
   const history = useHistory("");
 
-  React.useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cardsData]) => {
-        setCurrentUser(userData);
-        setCards(cardsData);
+  const [message, setMessage] = React.useState("");
+  const [signupSuccess, setSignupSuccess] = React.useState(true);
+  const [isToolTipOpen, setIsToolTipOpen] = React.useState(false);
+
+  const handleLogin = ({ email, password }) => {
+    return auth
+      .authorize(email, password)
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+          setLoggedIn(true);
+          setUserData(email);
+          history.push("/");
+        }
       })
       .catch((err) => {
+        setSignupSuccess(false);
+        setIsToolTipOpen(true);
         console.log(err);
       });
-  }, []);
+  };
+
+  const handleRegister = ({ email, password }) => {
+    return auth
+      .register(email, password)
+      .then(() => {
+        setTimeout(() => {
+          history.push("/signin");
+        }, 1000);
+        setSignupSuccess(true);
+        setIsToolTipOpen(true);
+      })
+      .catch((err) => {
+        setSignupSuccess(false);
+        setIsToolTipOpen(true);
+        setMessage(JSON.stringify(err.message));
+      });
+  };
+
+  const checkToken = () => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      auth
+        .getContent(jwt)
+        .then((res) => {
+          setLoggedIn(true);
+          setUserData(res.data.email);
+          history.push("/");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  React.useEffect(() => {
+    if (loggedIn) {
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([userData, cardsData]) => {
+          setCurrentUser(userData);
+          setCards(cardsData);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -102,6 +154,9 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -115,6 +170,9 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -128,6 +186,9 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -141,6 +202,9 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
@@ -151,36 +215,8 @@ function App() {
     setSelectedCard({ ...selectedCard, isOpen: false });
     setIdCardDelete(null);
     setIsConfirmPopupOpen(false);
-    setIsLoading(false);
+    setIsToolTipOpen(false);
   }
-
-  const handleLogin = ({ email, password }) => {
-    return auth.authorize(email, password).then((data) => {
-      if (data.token) {
-        localStorage.setItem("jwt", data.token);
-        tokenCheck();
-      }
-    });
-  };
-
-  const handleRegister = ({ email, password }) => {
-    return auth.register(email, password).then(() => {
-      setTimeout(() => {
-        history.push("/signin");
-      }, 3000);
-    });
-  };
-
-  const tokenCheck = () => {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      auth.getContent(jwt).then((res) => {
-        setLoggedIn(true);
-        setUserData(res.data.email);
-        history.push("/");
-      });
-    }
-  };
 
   const signOut = () => {
     localStorage.removeItem("jwt");
@@ -190,63 +226,55 @@ function App() {
   };
 
   React.useEffect(() => {
-    tokenCheck();
+    checkToken();
   }, []);
-
-  /* React.useEffect(() => {
-    if (loggedIn) {
-      history.push("/");
-    }
-  }, [loggedIn, history]);*/
 
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
-        <BrowserRouter>
-          <Switch>
-            <Route exact path="/signin">
-              <Login
-                handleLogin={handleLogin}
-                tokenCheck={tokenCheck}
-                loggedIn={loggedIn}
-              />
-            </Route>
-            <Route exact path="/signup">
-              <div className="registerContainer">
-                <Register handleRegister={handleRegister} />
-              </div>
-            </Route>
+        <Switch>
+          <Route exact path="/signin">
+            <Login
+              handleLogin={handleLogin}
+              checkToken={checkToken}
+              loggedIn={loggedIn}
+            />
+          </Route>
+          <Route exact path="/signup">
+            <div className="registerContainer">
+              <Register handleRegister={handleRegister} />
+            </div>
+          </Route>
+          <ProtectedRoute exact path="/" loggedIn={loggedIn}>
+            <Header
+              loggedIn={loggedIn}
+              userData={userData}
+              navText="Выйти"
+              navLink="signin"
+              signOut={signOut}
+            />
+            <Main
+              loggedIn={loggedIn}
+              userData={userData}
+              signOut={signOut}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
+            <Footer />
+          </ProtectedRoute>
 
-            <ProtectedRoute exact path="/" loggedIn={setLoggedIn}>
-              <Header
-                loggedIn={loggedIn}
-                userData={userData}
-                navText="Выйти"
-                navLink="signin"
-                signOut={signOut}
-              />
-
-              <Main
-                userData={userData}
-                signOut={signOut}
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onEditAvatar={handleEditAvatarClick}
-                onCardClick={handleCardClick}
-                cards={cards}
-                onCardLike={handleCardLike}
-                onCardDelete={handleCardDelete}
-              />
-              <Footer />
-            </ProtectedRoute>
-
-            <Route>
-              {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
-            </Route>
-          </Switch>
-        </BrowserRouter>
+          <Route>
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
+          </Route>
+        </Switch>
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
@@ -270,6 +298,11 @@ function App() {
           onClose={closeAllPopups}
           onDeleteCardConfirm={handleCardDeleteConfirm}
           isLoading={isLoading}
+        />
+        <InfoTooltip
+          isOpen={isToolTipOpen}
+          onClose={closeAllPopups}
+          success={signupSuccess}
         />
       </CurrentUserContext.Provider>
     </div>

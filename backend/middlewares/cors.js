@@ -1,5 +1,3 @@
-const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
-
 const allowedCors = [
   'http://localhost:3000',
   'http://proect15.students.nomoredomains.xyz',
@@ -7,6 +5,8 @@ const allowedCors = [
   'http://api.proect15.students.nomoredomains.xyz',
   'https://api.proect15.students.nomoredomains.xyz',
 ];
+
+const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
@@ -16,7 +16,6 @@ module.exports = (req, res, next) => {
 
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Credentials', true);
   }
 
   if (method === 'OPTIONS') {

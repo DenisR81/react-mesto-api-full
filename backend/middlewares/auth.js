@@ -2,7 +2,7 @@ const ErrorUnauthorized = require('../errors/ErrorUnauthorized');
 const { checkToken } = require('../helpers/jwt');
 
 module.exports.isAuth = (req, res, next) => {
-  const auth = req.headers.authorization;
+  const auth = req.cookies.jwt;
 
   if (!auth || !auth.startsWith('Bearer ')) {
     return next(new ErrorUnauthorized('Необходима авторизация'));

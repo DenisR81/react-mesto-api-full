@@ -1,13 +1,15 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { generateToken } = require('../helpers/jwt');
-const ErrorUnauthorized = require('../errors/ErrorUnauthorized');
+// const { generateToken } = require('../helpers/jwt');
+// const ErrorUnauthorized = require('../errors/ErrorUnauthorized');
 const ErrorConflict = require('../errors/ErrorConflict');
 const ErrorBadRequest = require('../errors/ErrorBadRequest');
 const ErrorNotFound = require('../errors/ErrorNotFound');
 
 const SALT_ROUNDS = 10;
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -97,32 +99,23 @@ module.exports.updateAvatar = (req, res, next) => {
 };
 
 module.exports.login = (req, res, next) => {
-  const {
-    email, password,
-  } = req.body;
-
-  User.findOne({ email })
-    .select('+password')
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        return next(new ErrorUnauthorized('Неверный e-mail или пароль'));
-      }
-
-      return Promise.all([
-        user,
-        bcrypt.compare(password, user.password),
-      ]);
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'secret',
+        { expiresIn: '7d' },
+      );
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      });
+      res
+        .status(200)
+        .send({ message: 'Добро пожаловать!' });
     })
-    .then(([user, isPasswordCorrect]) => {
-      if (!isPasswordCorrect) {
-        return next(new ErrorUnauthorized('Неверный e-mail или пароль'));
-      }
-      return generateToken(user._id);
-    })
-    .then((token) => {
-      res.send({ token });
-    })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };

@@ -44,10 +44,10 @@ function App() {
     return auth
       .authorize(email, password)
       .then((data) => {
-        if (data.token) {
+        if (data) {
           localStorage.setItem("jwt", data.token);
           setLoggedIn(true);
-          setUserData(email);
+          setUserData(data.email);
           history.push("/");
         }
       })

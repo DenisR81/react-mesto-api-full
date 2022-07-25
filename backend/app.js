@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const bodyParser = require('body-parser');
 const users = require('./routes/users');
@@ -10,13 +11,15 @@ const { isAuth } = require('./middlewares/auth');
 const handleError = require('./errors/handleError');
 const ErrorNotFound = require('./errors/ErrorNotFound');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const myCors = require('./middlewares/cors');
+const cors = require('./middlewares/cors');
 
 const app = express();
 const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
-app.use(myCors);
+app.use(cors);
+app.use(cookieParser());
+app.use(express.json());
 app.use(requestLogger);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

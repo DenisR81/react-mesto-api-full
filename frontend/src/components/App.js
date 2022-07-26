@@ -88,12 +88,12 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
+          console.log('0000')
         });
     }
   };
 
   React.useEffect(() => {
-    checkToken();
     if (loggedIn) {
       Promise.all([api.getUserInfo(), api.getInitialCards()])
         .then(([userData, cardsData]) => {
@@ -227,9 +227,9 @@ function App() {
     history.push("/signin");
   };
 
- // React.useEffect(() => {
-//    checkToken();
- // }, []);
+  React.useEffect(() => {
+    checkToken();
+  }, []);
 
   return (
     <div className="page">

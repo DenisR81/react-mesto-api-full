@@ -36,6 +36,7 @@ function App() {
   const [userData, setUserData] = React.useState("");
   const history = useHistory("");
 
+  // eslint-disable-next-line no-unused-vars
   const [message, setMessage] = React.useState("");
   const [signupSuccess, setSignupSuccess] = React.useState(true);
   const [isToolTipOpen, setIsToolTipOpen] = React.useState(false);
@@ -48,7 +49,6 @@ function App() {
           localStorage.setItem("jwt", data.token);
           setLoggedIn(true);
           setUserData(data.email);
-          console.log('12345')
           history.push("/");
         }
       })
@@ -88,7 +88,6 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
-          console.log('0000')
         });
     }
   };
@@ -229,6 +228,7 @@ function App() {
 
   React.useEffect(() => {
     checkToken();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

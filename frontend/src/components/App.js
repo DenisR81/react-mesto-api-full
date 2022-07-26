@@ -83,7 +83,7 @@ function App() {
         .getContent(jwt)
         .then((res) => {
           setLoggedIn(true);
-          setUserData(res.data.email);
+          setUserData(res.email);
           history.push("/");
         })
         .catch((err) => {

@@ -48,6 +48,7 @@ function App() {
           localStorage.setItem("jwt", data.token);
           setLoggedIn(true);
           setUserData(data.email);
+          console.log('12345')
           history.push("/");
         }
       })
@@ -82,7 +83,7 @@ function App() {
         .getContent(jwt)
         .then((res) => {
           setLoggedIn(true);
-          setUserData(res.email);
+          setUserData(res.data.email);
           history.push("/");
         })
         .catch((err) => {

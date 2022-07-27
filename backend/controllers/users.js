@@ -16,20 +16,29 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.user._id || req.params.userId)
+  User.findById(req.user._id)
     .then((user) => {
-      if (!user || (req.params.userId && (user._id.toString() !== req.params.userId))) {
-        next(new ErrorNotFound('Пользователь не найден'));
-      } else {
-        res.status(200).send(user);
+      if (!user) {
+        throw new ErrorNotFound('Пользователь не найден');
       }
+      res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new ErrorBadRequest('Пользователь не найден'));
-      } else {
-        next(err);
+    .catch(next);
+};
+
+module.exports.getUserById = (req, res, next) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        throw new ErrorNotFound('Пользователь не найден');
       }
+      res.send(user);
+    })
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        next(new ErrorBadRequest('Переданы некорректные данные для поиска'));
+        return;
+      } next(error);
     });
 };
 

@@ -122,7 +122,7 @@ module.exports.login = (req, res, next) => {
       });
       res
         .status(200)
-        .send(NODE_ENV === 'production' ? JWT_SECRET : 'secret');
+        .send({token});
     })
     .catch(next);
 };

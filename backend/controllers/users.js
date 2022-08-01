@@ -122,7 +122,7 @@ module.exports.login = (req, res, next) => {
       });
       res
         .status(200)
-        .send({token});
+        .send({ token });
     })
     .catch(next);
 };
